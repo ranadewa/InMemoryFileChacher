@@ -1,58 +1,66 @@
 #include "stdafx.h"
 #include "ItemFileReader.h"
 
-
-ItemFileReader::ItemFileReader(string readFileName, string itemFileName)
+ItemFileReader::ItemFileReader(string readFileName,const InfoThreads & info) : InputFileHandler(readFileName, info._itemFile)
 {
+	openOutputFile(readFileName);
 
-	try {
-		ItemFileProcessor::ItemFileProcessor(readFileName, itemFileName, true);
-
-		openOutputFile(readFileName);
-	}
-	catch (std::ifstream::failure e){
-
-		closeFiles();
-
-		throw e;
-	}
-
-}
-
-void ItemFileReader::openOutputFile(std::string readFileName)
-{
-	int readNameLength = readFileName.length();
-
-	string outputfileName = readFileName.substr(0, readNameLength - 4) + ".out.txt";
-
-	_outputFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-	try {
-			_outputFile.open(outputfileName.c_str());
-	}
-	catch (std::ifstream::failure e) {
-		throw e; 
-	}
-
-	
+	_cache = new LRUCache(info._cacheSize, info._itemFile);
 }
 
 ItemFileReader::~ItemFileReader()
 {
+	closeFiles();
+
+	delete _cache;
 }
 
 void ItemFileReader::processFile()
 {
-	
+	int key =0;
+
+	try
+	{
+		while (_inputFile >> key)
+		{
+			bool cacheHit = false;
+			double value = _cache->getValue(key, cacheHit);
+
+			string source = (cacheHit == true) ? "Cache" : "Disk";
+			string outLine = std::to_string(value) + " " + source+ "\n";
+
+			_outputFile.write(outLine.c_str(), outLine.size());
+		}
+	}
+	catch (std::ifstream::failure e)
+	{
+		if (!_inputFile.eof())
+		{
+			cerr << "Error in Reading the File " << endl;
+			cerr << e.what() << endl;
+		}
+	}
 
 }
 
 void ItemFileReader::closeFiles()
 {
-	ItemFileProcessor::closeFiles();
+	closeFile(_outputFile);
+}
 
-	if (_outputFile.is_open())
+void ItemFileReader::openOutputFile(string readFileName)
+{
+	int readNameLength = readFileName.length();
+
+	string outputfileName = readFileName.substr(0, readNameLength - 4) + ".out.txt";
+
+	try
 	{
-		_outputFile.close();
+		openFile(_outputFile, outputfileName.c_str());
+	}
+	catch (std::ifstream::failure e)
+	{
+		cerr << "Error opening the write file " << outputfileName << endl;
+		throw e;
 	}
 }

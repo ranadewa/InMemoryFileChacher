@@ -10,7 +10,7 @@ public:
 	ExternalMemory();
 	~ExternalMemory();
 
-	virtual double	readAndSubScribe(int key, DirtyCacheSubscriber* dcSubscriber) = 0;
+	virtual double	readAndSubScribe(int key, DirtyCacheSubscriber* dcSubscriber) { return 0; };
 	double  getUpdatedValue(int key, DirtyCacheSubscriber* dcSubscriber);
 	void	unSubScribe(int key, DirtyCacheSubscriber* dcSubscriber);
 

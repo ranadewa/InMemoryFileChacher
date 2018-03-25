@@ -19,7 +19,7 @@ public:
 	LRUCache(int cacheSize, ExternalMemory* extMemory);
 	virtual ~LRUCache();
 
-	double getValue(int key);
+	double getValue(int key, bool & cacheHit);
 	void   setValue(int key, double value);
 
 private :

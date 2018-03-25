@@ -48,7 +48,7 @@ void DirtyCacheHandler::unSubscribe(int key, DirtyCacheSubscriber * dcSubscriber
 	}
 	else
 	{
-		// Todo Error path
+		cerr << "unsubscription request for a non exsiting key " << key << endl;
 	}
 }
 
@@ -80,7 +80,9 @@ double DirtyCacheHandler::getValue(int key, DirtyCacheSubscriber* dcSubscriber)
 		return cacheSubIter->second.first;
 	}
 
-	return 0.0; // Error
+	cerr << "Value Requested from Cache for non existing key "<<key << endl;
+
+	return gd_NAN; // Error
 }
 
 void DirtyCacheHandler::clear()

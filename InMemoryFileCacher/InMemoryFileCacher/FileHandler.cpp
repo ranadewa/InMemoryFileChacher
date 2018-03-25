@@ -1,37 +1,26 @@
 #include "stdafx.h"
 #include "FileHandler.h"
 
-
-FileHandler::FileHandler()
+InputFileHandler::InputFileHandler(string readFileName, ItemFileWrapper* itemFileWrapper)
 {
+	_itemFile = itemFileWrapper;
+	openInputFile(readFileName);
 }
 
-
-FileHandler::~FileHandler()
+InputFileHandler::~InputFileHandler()
 {
+	closeFile(_inputFile);
 }
 
-void FileHandler::openFile(fstream & file, string fileName)
+void InputFileHandler::openInputFile(string readFileName)
 {
-	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-	try {
-		file.open(fileName.c_str());
+	try
+	{
+		openFile(_inputFile, readFileName.c_str());
 	}
-	catch (std::ifstream::failure e) {
-		throw e;
-	}
-}
-
-void FileHandler::readOpenFile(ifstream & readfile, const char * fileName)
-{
-	readfile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-	try {
-		readfile.open(fileName);
-	}
-	catch (std::ifstream::failure e) {
-
+	catch (std::ifstream::failure e)
+	{
+	 	cerr << "Error opening the Reader file "<<  readFileName.c_str()  << endl;
 		throw e;
 	}
 }

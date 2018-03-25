@@ -15,12 +15,14 @@ LRUCache::~LRUCache()
 {
 }
 
-double LRUCache::getValue(int key)
+double LRUCache::getValue(int key, bool & cacheHit)
 {
 	auto cacheIterator = _cache.find(key);
 
 	if (cacheIterator == _cache.end() )  //key not found in the cache get it from the external MemoryLocation
 	{
+		cacheHit = false;
+
 		double value = _extMemory->readAndSubScribe(key, this);
 
 		addNewValue(key, value);
@@ -28,6 +30,8 @@ double LRUCache::getValue(int key)
 		return value;
 	}
 	
+	cacheHit = true;
+
 	// Value exists get it to the front
 	updateCache(cacheIterator);
 
