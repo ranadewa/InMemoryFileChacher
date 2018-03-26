@@ -10,7 +10,7 @@ ItemFileProcessor::ItemFileProcessor(string readFileName, string itemFileName, b
 	try {
 		_readFile.open(readFileName.c_str());
 
-		unsigned int mode = (readItemFile == true) ? ios::in : ios::out;
+		ios_base::openmode mode = (readItemFile == true) ? ios::in : ios::out;
 		_itemFile.open(itemFileName.c_str(), mode);
 	}
 	catch (std::ifstream::failure e) {
