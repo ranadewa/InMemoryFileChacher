@@ -33,10 +33,10 @@ void processFile(const char * readerFileName, const InfoThreads & info, list<T*>
 				T* ifProcessor = new T(readLine, info);
 				itemFileprocessors.push_back(ifProcessor);
 
-				thread* t = new thread(&T::processFile, ifProcessor);
-				threads.push_back(t);
+				 thread* t = new thread(&T::processFile, ifProcessor);
+				 threads.push_back(t);
 
-				cout << "Thread " << t->get_id() << " Created" << endl;
+				 cout << "Thread " << t->get_id() << " Created" << endl;
 
 			}
 			catch (std::ifstream::failure e)
